@@ -1,7 +1,7 @@
 import server from './src/config/server.js'
 import sequelize from './src/config/db.js'
 import { PORT } from './src/config/variable_provider.js'
-import './src/models/Task.js'
+import './src/models/index.js'
 
 server.listen(PORT, async () => {
   try {

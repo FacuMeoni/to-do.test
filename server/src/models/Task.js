@@ -1,7 +1,7 @@
 import sequelize from '../config/db.js'
 import { DataTypes } from 'sequelize'
 
-const TaskModel = sequelize.define('task', {
+export const TaskModel = sequelize.define('task', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -19,5 +19,3 @@ const TaskModel = sequelize.define('task', {
     allowNull: true
   }
 })
-
-export default TaskModel
