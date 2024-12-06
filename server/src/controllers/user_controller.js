@@ -1,4 +1,4 @@
-import { ValidationError } from '../utils/errors.js'
+import { NotFoundError, ValidationError } from '../utils/errors.js'
 import bcrypt from 'bcrypt'
 import { UserModel } from '../models/index.js'
 import { validateUser } from '../validations/user_validations.js'
@@ -25,6 +25,26 @@ export const createUser = async (req, res) => {
     success: true,
     user: {
       id: newUser.id,
+      username
+    }
+  })
+}
+
+export const loginUser = async (req, res) => {
+  const { username, password } = req.body
+
+  const user = await UserModel.findOne({
+    where: { username }
+  })
+  if (!user) throw new NotFoundError('Username dont exists.')
+
+  const passValidation = await bcrypt.compare(password, user.password)
+  if (!passValidation) throw new ValidationError('Password is incorrect.')
+
+  return res.status(200).json({
+    success: true,
+    user: {
+      id: user.id,
       username
     }
   })
