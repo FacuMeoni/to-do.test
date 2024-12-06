@@ -7,7 +7,7 @@ export const UserModel = sequelize.define('user', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  name: {
+  username: {
     type: DataTypes.STRING,
     allowNull: false
   },
