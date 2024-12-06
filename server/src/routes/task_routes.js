@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createTask, getTaskByID } from '../controllers/task_controller.js'
-import { TryCatch } from '../middlewares/try_catch.js'
+import { TryCatch } from '../utils/try_catch.js'
 
 const Taskrouter = Router()
 

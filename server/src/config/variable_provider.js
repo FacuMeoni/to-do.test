@@ -10,5 +10,6 @@ export const {
   DB_HOST,
   DB_NAME,
   DB_USER,
-  DB_PASS
+  DB_PASS,
+  ALLOWED_ORIGINS
 } = process.env
