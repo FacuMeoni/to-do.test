@@ -1,4 +1,4 @@
-import { userSchema, idUserSchema } from './schemas/user_schema.js'
+import { userSchema } from './schemas/user_schema.js'
 
 export const validateUser = (user) => {
   const validatedUser = userSchema.safeParse(user)
@@ -14,12 +14,4 @@ export const partialValidateUser = (user) => {
   if (validatedUser.error) throw validatedUser.error
 
   return validatedUser.data
-}
-
-export const validateUserID = (id) => {
-  const validatedID = idUserSchema.safeParse(id)
-
-  if (validatedID.error) throw validatedID.error
-
-  return validatedID.data
 }
