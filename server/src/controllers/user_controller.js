@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import { UserModel } from '../models/index.js'
 import { validateUser } from '../validations/user_validations.js'
 import { generateJWT } from '../utils/generate_jwt_token.js'
+import crypto from 'node:crypto'
 
 export const createUser = async (req, res) => {
   const { username, password } = req.body
@@ -33,6 +34,24 @@ export const createUser = async (req, res) => {
     .status(201).json({ success: true, user: { id: newUser.id, username } })
 }
 
+export const createGuessUser = async (req, res) => {
+  const username = `Guess_${crypto.randomUUID()}`
+
+  const guessUser = await UserModel.create({ username })
+
+  if (!guessUser) throw new Error()
+
+  const token = await generateJWT({ id: guessUser.id, username: guessUser.username })
+
+  return res
+    .cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60
+    })
+    .status(201).json({ success: true, user: { id: guessUser.id, username } })
+}
+
 export const loginUser = async (req, res) => {
   const { username, password } = req.body
 
@@ -59,4 +78,17 @@ export const logoutUser = async (req, res) => {
   return res
     .clearCookie('access_token')
     .status(200).json({ success: true })
+}
+
+export const logoutGuessUser = async (req, res) => {
+  const { id } = req.session.user
+  const userToDelete = await UserModel.findByPk(id)
+  if (!userToDelete) throw new NotFoundError('User not found')
+
+  try {
+    await userToDelete.destroy()
+  } catch (error) {
+    throw new Error()
+  }
+  return res.clearCookie('access_token').status(200).json({ success: true })
 }
