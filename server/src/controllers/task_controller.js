@@ -23,8 +23,6 @@ export const createTask = async (req, res) => {
 
 export const getUserTasks = async (req, res) => {
   const { id } = req.session.user
-  console.log(id)
-
   const validatedUserID = validateUUID(id)
   const user = await UserModel.findByPk(validatedUserID)
   if (!user) throw new NotFoundError('User not found, verify ID.')
