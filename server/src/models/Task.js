@@ -17,5 +17,10 @@ export const TaskModel = sequelize.define('task', {
   description: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  disabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
   }
 })

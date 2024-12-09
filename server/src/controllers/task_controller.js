@@ -23,6 +23,8 @@ export const createTask = async (req, res) => {
 
 export const getUserTasks = async (req, res) => {
   const { id } = req.session.user
+  console.log(id)
+
   const validatedUserID = validateUUID(id)
   const user = await UserModel.findByPk(validatedUserID)
   if (!user) throw new NotFoundError('User not found, verify ID.')
@@ -53,10 +55,10 @@ export const getTaskByID = async (req, res) => {
 export const updateTask = async (req, res) => {
   const { id } = req.params
   const userId = req.session.user.id
-  const { name, description, condition } = req.body
+  const { name, description, condition, disabled } = req.body
 
   const validatedID = validateUUID(id)
-  const validatedTask = partialValidateTask({ name, description, condition })
+  const validatedTask = partialValidateTask({ name, description, condition, disabled })
 
   const taskToUpdate = await TaskModel.findByPk(validatedID)
 
@@ -71,4 +73,21 @@ export const updateTask = async (req, res) => {
     success: true,
     taskUpdated
   })
+}
+
+export const deleteTask = async (req, res) => {
+  const { id } = req.params
+  const userId = req.session.user.id
+  const validatedID = validateUUID(id)
+
+  const taskToDelete = await TaskModel.findByPk(validatedID)
+  if (!taskToDelete) NotFoundError(`Not found any task with id ${validatedID}`)
+
+  if (taskToDelete.userId !== userId) throw new UnauthorizedError('This task does not belong to the user')
+
+  taskToDelete.disabled = true
+
+  await taskToDelete.save()
+
+  return res.status(200).json({ success: true })
 }
