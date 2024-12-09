@@ -2,6 +2,7 @@ import { NotFoundError, ValidationError } from '../utils/errors.js'
 import bcrypt from 'bcrypt'
 import { UserModel } from '../models/index.js'
 import { validateUser } from '../validations/user_validations.js'
+import { validateUUID } from '../validations/uuid_validations.js'
 import { generateJWT } from '../utils/generate_jwt_token.js'
 import crypto from 'node:crypto'
 
@@ -82,7 +83,8 @@ export const logoutUser = async (req, res) => {
 
 export const logoutGuessUser = async (req, res) => {
   const { id } = req.session.user
-  const userToDelete = await UserModel.findByPk(id)
+  const validatedID = validateUUID(id)
+  const userToDelete = await UserModel.findByPk(validatedID)
   if (!userToDelete) throw new NotFoundError('User not found')
 
   try {
