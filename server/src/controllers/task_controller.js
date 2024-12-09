@@ -4,7 +4,8 @@ import { validateTask } from '../validations/task_validations.js'
 import { validateUUID } from '../validations/uuid_validations.js'
 
 export const createTask = async (req, res) => {
-  const { title, description, condition, userId } = req.body
+  const { title, description, condition } = req.body
+  const userId = req.session.user.id
 
   const validatedUserID = validateUUID(userId)
   const user = await UserModel.findByPk(validatedUserID)
@@ -21,7 +22,8 @@ export const createTask = async (req, res) => {
 }
 
 export const getUserTasks = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.session.user
+  console.log(id)
   const validatedUserID = validateUUID(id)
   const user = await UserModel.findByPk(validatedUserID)
   if (!user) throw new NotFoundError('User not found, verify ID.')
